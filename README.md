@@ -55,7 +55,7 @@ Git for version control.
 ### 1. Clone the repository:
 ```bash
 Copy code
-git clone https://github.com/your-username/bondly.git
+https://github.com/AryanVarmora/Blondly.git
 cd bondly
 ```
 ### 2. Install dependencies for both client and server:
