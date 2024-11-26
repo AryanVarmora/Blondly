@@ -2,27 +2,26 @@
 Welcome to Social Shpere project created by Me &amp; Akash This repository contains both the backend (Node.js, Express, MongoDB) and frontend (React) components for building a fully functional Social network site. Whether you're new to the project or a returning team member, this README will guide you on how to get set up and contribute effectively.
 
 ## Team Members
-## Team Azerbaijan
 - **Aryan**
 - **Akash**
 
-##Table of Contents
-- About the Project
-- Features
-- Tech Stack
-- Getting Started
-- Prerequisites
-- Installation
-- Usage
-- Roadmap
-- Contributing
-- License
+## Table of Contents
+- [About the Project] 
+- [Features]
+- [Tech Stack]
+- [Getting Started]
+- [Prerequisites]
+- [Installation]
+- [Usage]
+- [Roadmap]
+- [Contributing]
+- [License]
 
-##About the Project
+## About the Project
 
 Bondly is a social networking platform designed to bring people together. With a clean and intuitive interface, Bondly allows users to create profiles, make friends, share posts, and interact with others in a meaningful way. Built using the MERN stack, Bondly is scalable, fast, and efficient.
 
-##Features
+## Features
 
 **User Profiles**: Create, update, and manage user profiles.
 **Friendships**: Add and remove friends to build your network.
@@ -31,7 +30,7 @@ Bondly is a social networking platform designed to bring people together. With a
 **Secure Authentication**: User login and registration with JWT-based security.
 
 
-##Tech Stack
+## Tech Stack
 
 **Frontend**: React.js
 **Backend**: Node.js, Express.js
@@ -39,31 +38,32 @@ Bondly is a social networking platform designed to bring people together. With a
 **State Management**: Context API 
 
 
-##Getting Started
+## Getting Started
 Prerequisites
 Node.js installed on your machine.
 MongoDB instance running locally or in the cloud (e.g., MongoDB Atlas).
 Git for version control.
 
 
-##Installation
+## Installation
 ### 1. Clone the repository:
-
-bash
+```bash
 Copy code
 git clone https://github.com/your-username/bondly.git
 cd bondly
+```
 ### 2. Install dependencies for both client and server:
 
-bash
+```bash
 Copy code
 cd client
 npm install
 cd ../server
 npm install
-Environment variables:
+```
+### 3. Environment variables:
 
-### 3. Create a .env file in the server directory.
+Create a .env file in the server directory.
 Add the following:
 makefile
 Copy code
@@ -73,15 +73,17 @@ PORT=5000
 Run the application:
 
 ### 4. Start the server:
-bash
+```bash
 Copy code
 cd server
 npm start
+```
 ### 5. Start the client:
-bash
+```bash
 Copy code
 cd client
 npm start
+```
 Open your browser at http://localhost:3000 to see the application.
 
 ##Usage
@@ -90,12 +92,13 @@ Sign up and create your profile.
 Add friends to build your network.
 Share posts, comment, and interact with your community.
 Folder Structure
-bash
+```bash
 Copy code
 bondly/
 ├── client/       # React.js frontend
 ├── server/       # Express.js backend
 ├── README.md     # Project documentation
+```
 
 ##Roadmap
 
