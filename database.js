@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+require('dotenv').config(); // Import dotenv
 
 class Database {
     constructor() {
@@ -7,9 +7,9 @@ class Database {
     }
 
     connect() {
-        // Database connection
+        const uri = process.env.MONGODB_URI; // Load from environment variable
         mongoose
-            .connect("mongodb+srv://akv5:F5fcnjiZjlJmNUss@blondlycluster.avgd7.mongodb.net/?retryWrites=true&w=majority&appName=Blondlycluster")
+            .connect(uri)
             .then(() => {
                 console.log("Database connection successful");
             })
