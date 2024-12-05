@@ -1,0 +1,30 @@
+{
+  "name": "blondly",
+  "version": "1.0.0",
+  "description": "Welcome to Social Shpere project created by Me & Akash. This repository contains both the backend (Node.js, Express, MongoDB) and frontend (React) components for building a fully functional Social network site. Whether you're new to the project or a returning team member, this README will guide you on how to get set up and contribute effectively.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AryanVarmora/Blondly.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AryanVarmora/Blondly/issues"
+  },
+  "homepage": "https://github.com/AryanVarmora/Blondly#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "mongodb": "^6.11.0",
+    "mongoose": "^8.8.3",
+    "pug": "^3.0.3"
+  }
+}
