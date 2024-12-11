@@ -29,7 +29,7 @@ $("#submitPostButton").click(() => {
     })
 })
 
-$(document).on("click", ".likeButton",(event) => {
+$(document).on("click", ".likeButton", (event) => {
     var button = $(event.target);
     var postId = getPostIdFromElement(button);
 
@@ -40,7 +40,8 @@ $(document).on("click", ".likeButton",(event) => {
         url: `/api/posts/${postId}/like`,
         type: "PUT",
         suuccess: (postData) => {
-            console.log(postData);
+           
+            button.find("span").text(postData.likes.length || "");  
         }
     })
     
@@ -48,7 +49,7 @@ $(document).on("click", ".likeButton",(event) => {
 
 function getPostIdFromElement(element) {
     var isRoot = element.hasClass("post");
-    var rootElement = isRoot ? element: element.closest(".post");
+    var rootElement = isRoot == true? element: element.closest(".post");
     var postId = rootElement.data().id;
 
 
@@ -97,6 +98,7 @@ function createPostHtml(postData){
                             <div class='postButtonContainer'>
                                 <button class='likeButton'>
                                     <i class="fa-regular fa-heart"></i>
+                                    <span>${postData.likes.length || ""} </span>
                                 </button>
                             </div>
                         </div>
