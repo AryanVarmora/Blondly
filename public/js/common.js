@@ -57,6 +57,35 @@ $(document).on("click", ".likeButton", (event) => {
     });
 });
 
+// $(document).on("click", ".retweetButton", (event) => {
+//     var button = $(event.target);
+//     var postId = getPostIdFromElement(button);
+
+//     if (postId === undefined) return;
+
+//     $.ajax({
+//         url: `/api/posts/${postId}/retweet`,
+//         type: "POST",
+//         // success: function(posts) {
+//         //     console.log(posts);  // Log the data to inspect its structure
+//         //     posts.forEach(postData => {
+//         //         var html = createPostHtml(postData);
+//         //         $(".postContainer").prepend(html);
+//         //     });
+//         // }
+//         success: function(post) {
+//             console.log(post);
+//             var html = createPostHtml(post);
+//             $(".postContainer").prepend(html);
+//         }
+        
+//         ,
+//         error: (error) => {
+//             console.log("Error retweeting the post:", error);
+//         }
+//     });
+// });
+
 $(document).on("click", ".retweetButton", (event) => {
     var button = $(event.target);
     var postId = getPostIdFromElement(button);
@@ -66,20 +95,13 @@ $(document).on("click", ".retweetButton", (event) => {
     $.ajax({
         url: `/api/posts/${postId}/retweet`,
         type: "POST",
-        success: (postData) => {
-
-            var retweetCount = postData.likes.length || "";
-            button.find("span").text(retweetUsers.toString());
-        
-            if (postData.retweetUsers.includes(userLoggedIn._id)) {
-                button.addClass("active");
-            } else {
-                button.removeClass("active");
-            }
+        success: function(post) {
+            console.log(post);
+            var html = createPostHtml(post);
+            $(".postContainer").prepend(html);
         },
-        
         error: (error) => {
-            console.log("Error liking the post:", error);
+            console.log("Error retweeting the post:", error);
         }
     });
 });
@@ -98,67 +120,151 @@ function getPostIdFromElement(element) {
     return postId;
 }
 
-function createPostHtml(postData){
+// function createPostHtml(postData){
 
-    if (postData == null) return alert("post object is null");
+//      if (postData == null) return alert("post object is null");
 
-    var isRetweet = postData.retweetData !== undefined;
-    var retweetedBy = isRetweet ? postData.postedBy.username: null;
-    postData = isRetweet ? postData.retweetData : postData; 
+//     var isRetweet = postData.retweetData !== undefined;
+//      var retweetedBy = isRetweet ? postData.postedBy.username: null;
+//      postData = isRetweet ? postData.retweetData : postData; 
+//      var postedBy = postData.postedBy;
+
+//      if (!postData.postedBy || postData.postedBy._id === undefined) {
+//         console.log("user object not populated");
+//         return '';  // Return an empty string or some error handling HTML
+//     }
+    
+
+//     var displayName = postedBy.firstName + " " + postedBy.lastName;
+//     var timestamp = timeDifference(new Date(), new Date(postData.createdAt));
+
+//     var likeButtonActiveClass = postData.likes.includes(userLoggedIn._id) ? "active" : ""; 
+//     var retweetButtonActiveClass = postData.retweetUsers.includes(userLoggedIn._id) ? "active" : ""; 
+
+//     var retweetText = '';
+//     if (isRetweet){
+//         retweetText = `<span>
+//                          <i class="fa-regular fa-heart"></i>
+//                          Retweeted By <a href='/profile/${retweetedBy}'>@${retweetedBy}</a>
+//                         </span>`
+//     }
+
+//     return `<div class='post' data-id = '${postData._id}'>
+//                 <div class='postActionContainer'>
+//                     ${retweetText}
+//                 </div>
+//                 <div class='mainContentContainer'>
+//                     <div class='userImageContainer'>
+//                         <img src='${postedBy.profilePic}'>
+//                     </div>
+//                     <div class='postContentContainer'>
+//                         <div class='header'>
+//                             <a href= '/profile/${postedBy.username}' class='displayName'>${displayName}</a>
+//                             <span class='username'>@${postedBy.username}</span>
+//                             <span class='date'>${timestamp}</span>
+//                         </div>
+//                         <div class = 'postBody'>
+//                             <span>${postData.content}</span>
+//                         </div>
+//                         <div class = 'postFooter'> 
+//                             <div class='postButtonContainer'>
+//                                 <button data-toggle='modal' data-target='#replyModalLabel'>
+//                                     <i class="fa-regular fa-comment"></i>
+//                                 </button>
+//                             </div>
+//                             <div class='postButtonContainer green'>
+//                                 <button class = 'retweetButton ${retweetButtonActiveClass}'>
+//                                     <i class="fa-solid fa-retweet"></i>
+//                                     <span>${postData.retweetUsers.length || ""} </span>
+//                                 </button>
+//                             </div>
+//                             <div class='postButtonContainer red'>
+//                                 <button class='likeButton ${likeButtonActiveClass}'>
+//                                     <i class="fa-regular fa-heart"></i>
+//                                     <span>${postData.likes.length || ""} </span>
+//                                 </button>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>`;
+// } 
+
+function createPostHtml(postData) {
+    if (!postData || !postData.postedBy) {
+        console.log("Invalid or incomplete post data", postData);
+        return ''; // Return empty content for invalid data
+    }
+
+        var isRetweet = postData.retweetData !== undefined;
+     var retweetedBy = isRetweet ? postData.postedBy.username: null;
+     postData = isRetweet ? postData.retweetData : postData; 
+     var postedBy = postData.postedBy;
+
+     if (!postData.postedBy || postData.postedBy._id === undefined) {
+        console.log("user object not populated");
+        return '';  // Return an empty string or some error handling HTML
+    }
     var postedBy = postData.postedBy;
 
-    if(postedBy._id == undefined){
-        return console.log("user object not populated")
+    // Check if postedBy is populated or just an ID
+    if (typeof postedBy === 'string') {
+        console.log("postedBy is not fully populated:", postData);
+        return ''; // Return empty content or handle accordingly
     }
 
+    // Continue rendering the post HTML
     var displayName = postedBy.firstName + " " + postedBy.lastName;
     var timestamp = timeDifference(new Date(), new Date(postData.createdAt));
-
-    var likeButtonActiveClass = postData.likes.includes(userLoggedIn._id) ? "active" : ""; 
-    var retweetButtonActiveClass = postData.retweetUsers.includes(userLoggedIn._id) ? "active" : ""; 
+    var likeButtonActiveClass = postData.likes.includes(userLoggedIn._id) ? "active" : "";
+    var retweetButtonActiveClass = postData.retweetUsers.includes(userLoggedIn._id) ? "active" : "";
 
     var retweetText = '';
-    if (isRetweet){
-        retweetText = `<span>Retweeted By <a href='/profile/${retweetedBy}'>@${retweetedBy}</a></span>`
-    }
+        if (isRetweet){
+            retweetText = `<span>
+                             <i class="fa-regular fa-heart"></i>
+                             Retweeted By <a href='/profile/${retweetedBy}'>@${retweetedBy}</a>
+                            </span>`
+        }
 
-    return `<div class='post' data-id = '${postData._id}'>
-                <div class='mainContentContainer'>
-                    <div class='userImageContainer'>
-                        <img src='${postedBy.profilePic}'>
+    return `
+        <div class='post' data-id='${postData._id}'>
+            <div class='mainContentContainer'>
+                <div class='userImageContainer'>
+                    <img src='${postedBy.profilePic || "/images/defaultProfilePic.png"}'>
+                </div>
+                <div class='postContentContainer'>
+                    <div class='header'>
+                        <a href='/profile/${postedBy.username}' class='displayName'>${displayName}</a>
+                        <span class='username'>@${postedBy.username}</span>
+                        <span class='date'>${timestamp}</span>
                     </div>
-                    <div class='postContentContainer'>
-                        <div class='header'>
-                            <a href= '/profile/${postedBy.username}' class='displayName'>${displayName}</a>
-                            <span class='username'>@${postedBy.username}</span>
-                            <span class='date'>${timestamp}</span>
+                    <div class='postBody'>
+                        <span>${postData.content}</span>
+                    </div>
+                    <div class='postFooter'>
+                        <div class='postButtonContainer'>
+                            <button>
+                                <i class="fa-regular fa-comment"></i>
+                            </button>
                         </div>
-                        <div class = 'postBody'>
-                            <span>${postData.content}</span>
+                        <div class='postButtonContainer green'>
+                            <button class='retweetButton ${retweetButtonActiveClass}'>
+                                <i class="fa-solid fa-retweet"></i>
+                                <span>${postData.retweetUsers.length || ""}</span>
+                            </button>
                         </div>
-                        <div class = 'postFooter'> 
-                            <div class='postButtonContainer'>
-                                <button>
-                                    <i class="fa-regular fa-comment"></i>
-                                </button>
-                            </div>
-                            <div class='postButtonContainer green'>
-                                <button class = 'retweetButton ${retweetButtonActiveClass}'>
-                                    <i class="fa-solid fa-retweet"></i>
-                                    <span>${postData.retweetUsers.length || ""} </span>
-                                </button>
-                            </div>
-                            <div class='postButtonContainer red'>
-                                <button class='likeButton ${likeButtonActiveClass}'>
-                                    <i class="fa-regular fa-heart"></i>
-                                    <span>${postData.likes.length || ""} </span>
-                                </button>
-                            </div>
+                        <div class='postButtonContainer red'>
+                            <button class='likeButton ${likeButtonActiveClass}'>
+                                <i class="fa-regular fa-heart"></i>
+                                <span>${postData.likes.length || ""}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>`;
-} 
+            </div>
+        </div>`;
+}
 
 
 function timeDifference(current, previous) {

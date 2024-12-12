@@ -13,13 +13,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 router.get("/", (req, res, next ) => {
     Post.find()
     .populate("postedBy")
-    // .populate("retweetData")
     .sort({"createdAt": -1})
-    .then(results => res.status(200).send(results))
+    .then(results => {
+        res.status(200).send(results);
+    })
     .catch(error => {
         console.log(error);
         res.sendStatus(400);
     })
+    
     
 });
 router.post("/", async(req, res, next ) => {
@@ -155,54 +157,72 @@ router.put("/:id/like", async(req, res) => {
 // });
 
 
-router.post("/:id/retweet", async(req, res ) => {
+// router.post("/:id/retweet", async(req, res) => {
+//     var postId = req.params.id;
+//     var userId = req.session.user._id;
 
+//     try {
+//         // Check if the post is already retweeted by the user
+//         var existingRetweet = await Post.findOne({ postedBy: userId, retweetData: postId });
+//         if (existingRetweet) {
+//             // If it exists, remove the retweet
+//             await Post.deleteOne({ _id: existingRetweet._id });
+//             res.status(200).send({ message: "Retweet removed", retweetId: existingRetweet._id });
+//         } else {
+//             // If it doesn't exist, create a new retweet
+//             var newRetweet = await Post.create({ postedBy: userId, retweetData: postId });
+//             res.status(201).send({ message: "Retweeted successfully", post: newRetweet });
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         res.sendStatus(400);
+//     }
+// });
 
+// router.post("/:id/retweet", async(req, res) => {
+//     var postId = req.params.id;
+//     var userId = req.session.user._id;
 
+//     try {
+//         var existingRetweet = await Post.findOne({ postedBy: userId, retweetData: postId });
+//         if (existingRetweet) {
+//             await Post.deleteOne({ _id: existingRetweet._id });
+//             res.status(200).send({ message: "Retweet removed", retweetId: existingRetweet._id });
+//         } else {
+//             var newRetweet = await Post.create({ postedBy: userId, retweetData: postId });
+//             res.status(201).send({ message: "Retweeted successfully", post: newRetweet });
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         res.sendStatus(400);
+//     }
+// });
+
+router.post("/:id/retweet", async(req, res) => {
     var postId = req.params.id;
     var userId = req.session.user._id;
 
-    // Delete
-    var deletedPost = await Post.findOneAndDelete({postedBy: userId, retweetData: postId })
-    .catch(error => {
+    try {
+        var existingRetweet = await Post.findOne({ postedBy: userId, retweetData: postId });
+        if (existingRetweet) {
+            await Post.deleteOne({ _id: existingRetweet._id });
+            res.status(200).send({ message: "Retweet removed", retweetId: existingRetweet._id });
+        } else {
+            // Create the retweet and immediately populate necessary fields
+            var newRetweet = await Post.create({ postedBy: userId, retweetData: postId })
+                .then(post => post.populate('postedBy').exec()) // Executing the populate directly
+                .catch(err => {
+                    console.error("Error creating or populating new retweet:", err);
+                    throw err;  // Rethrow to be caught by the outer catch block
+                });
+
+            res.status(201).send({ message: "Retweeted successfully", post: newRetweet });
+        }
+    } catch (error) {
         console.log(error);
         res.sendStatus(400);
-    })
-
-
-    var option = deletedPost != null ? "$pull" : "$addToSet";
-
-    var repost = deletedPost;
-
-    if (repost == null) {
-        repost = await Post.create({postedBy: userId, retweetData: postId})
-        .catch(error => {
-            console.log(error);
-            res.sendStatus(400);
-        })
-        
     }
-    // Insert User Like 
-
-    req.session.user = await User.findByIdAndUpdate(userId,{ [option]: {retweets: repost._id } }, {new: true})
-    .catch(error => {
-        console.log(error);
-        res.sendStatus(400);
-    })
-
-    // Insert Post like
-
-    var post  = await Post.findByIdAndUpdate(postId,{ [option]: {retweetUsers: userId }}, {new: true})
-    .catch(error => {
-        console.log(error);
-        res.sendStatus(400); 
-    })
-
-
-
-
-//     // res.status(200).send("Liked")
-   
 });
+
 
 module.exports = router;
